@@ -3,12 +3,11 @@ package com.shj.springchatting;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 import java.util.TimeZone;
 
 // @EnableJpaAuditing
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})  // 일단 DB 미적용.
+@SpringBootApplication
 public class SpringChattingApplication {
 
 	@PostConstruct

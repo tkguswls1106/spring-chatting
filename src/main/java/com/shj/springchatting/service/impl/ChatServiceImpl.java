@@ -41,6 +41,10 @@ public class ChatServiceImpl implements ChatService {
                 Room newRoom = roomService.createRoom(chatDto.getRoomName(), user);
                 chatDto.setRoomId(newRoom.getRoomId());
                 chatDto.setMessage("'" + user.getNickname() + "'님이 방을 생성하였습니다.");  // 방 신규 생성시에는 굳이 나타내줄 필요 없긴함. (차후 제거할 코드줄임.)
+
+                Chat chat = chatDto.toEntity(newRoom);
+                chatRepository.save(chat);
+                return chatDto;
             }
             else {  // 방이 이미 생성되어 있는 경우
                 chatDto.setMessage("'" + user.getNickname() + "'님이 방에 참가하였습니다.");
@@ -58,7 +62,7 @@ public class ChatServiceImpl implements ChatService {
             chatDto.setMessage("'" + user.getNickname() + "'님의 메세지: '" + chatDto.getMessage() + "'");  //  (차후 수정할 코드줄임.)
         }
 
-        Chat chat = chatDto.toEntity();
+        Chat chat = chatDto.toEntity(roomServiceImpl.findRoom(chatDto.getRoomId()));
         chatRepository.save(chat);
         return chatDto;
     }

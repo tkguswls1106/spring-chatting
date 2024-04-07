@@ -1,7 +1,6 @@
 package com.shj.springchatting.domain.chat;
 
 import com.shj.springchatting.domain.mapping.UserRoom;
-import com.shj.springchatting.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 

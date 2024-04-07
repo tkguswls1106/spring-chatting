@@ -1,15 +1,11 @@
 package com.shj.springchatting.domain.chat;
 
-import com.shj.springchatting.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 @Getter
 @NoArgsConstructor
@@ -26,7 +22,9 @@ public class Chat implements Serializable {
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
 
-    private Long roomId;
+    @ManyToOne(fetch = FetchType.LAZY)  // Room-Chat 양방향매핑
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     private Long senderId;
 
@@ -34,16 +32,12 @@ public class Chat implements Serializable {
 
     private String createdDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)  // Room-Chat 양방향매핑
-    @JoinColumn(name = "room_id")
-    private Room room;
-
 
     @Builder(builderClassName = "ChatSaveBuilder", builderMethodName = "ChatSaveBuilder")
-    public Chat(MessageType messageType, Long roomId, Long senderId, String message, String createdDate) {
+    public Chat(MessageType messageType, Room room, Long senderId, String message, String createdDate) {
         // 이 빌더는 Chat 생성때만 사용할 용도
         this.messageType = messageType;
-        this.roomId = roomId;
+        this.room = room;
         this.senderId = senderId;
         this.message = message;
         this.createdDate = createdDate;
