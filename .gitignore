@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+## 내가 rabbitMQ 보안을 우려하여 따로 파일로 빼두고 gitignore에 추가해둠.
+**/application-rabbitmq.properties
