@@ -3,36 +3,27 @@ package com.shj.springchatting.domain.chat;
 import com.shj.springchatting.service.ChatService;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.UUID;
 
 @Getter
-public class ChatRoom {
+@Setter
+public class ChatRoom {  // 웹소켓 위에 Stomp를 얹어서 사용하게되면, 이전에 웹소켓만 사용할때와는 다르게 session을 가질 필요가 없다.
 
-    private String roomId;
-    private String name;
-    private Set<WebSocketSession> sessions = new HashSet<>();  // 해당 채팅방에 참여한 세션들을 관리하기 위한 목록
+    private String roomId;  // 채팅방 아이디
+    private String roomName;  // 채팅방 이름
+    private long userCount;  // 채팅방 인원수
+    private HashMap<String, String> userList = new HashMap<String, String>();
 
 
-    @Builder
-    public ChatRoom(String roomId, String name) {
-        this.roomId = roomId;
-        this.name = name;
-    }
+    public ChatRoom create(String roomName){
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.roomId = UUID.randomUUID().toString();
+        chatRoom.roomName = roomName;
 
-    public void handleActions(WebSocketSession session, ChatMessage chatMessage, ChatService chatService) {
-        if (chatMessage.getType().equals(MessageType.ENTER)) {
-            sessions.add(session);
-            chatMessage.setMessage(chatMessage.getSender() + " 님이 입장했습니다.");
-        }
-
-        sendMessage(chatMessage, chatService);
-    }
-
-    private <T> void sendMessage(T message, ChatService chatService) {
-        sessions.parallelStream()
-                .forEach(session -> chatService.sendMessage(session, message));
+        return chatRoom;
     }
 }
