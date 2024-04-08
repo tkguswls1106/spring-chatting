@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 public class ChatDto {
@@ -26,7 +28,7 @@ public class ChatDto {
     @Setter
     private String senderName;
     @Setter
-    private String createdDate;
+    private LocalDateTime createdTime;
 
 
     public Chat toEntity(Room room) {
@@ -36,7 +38,7 @@ public class ChatDto {
                 .senderName(senderName)
                 .message(message)
                 .messageType(messageType)
-                .createdDate(createdDate)
+                .createdTime(createdTime)
                 .build();
     }
 
@@ -46,7 +48,7 @@ public class ChatDto {
         this.messageType = entity.getMessageType();
         this.message = entity.getMessage();
         this.senderName = entity.getSenderName();
-        this.createdDate = entity.getCreatedDate();
+        this.createdTime = entity.getCreatedTime();
     }
 }
 

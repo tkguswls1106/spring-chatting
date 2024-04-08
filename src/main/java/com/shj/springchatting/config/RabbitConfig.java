@@ -105,4 +105,18 @@ public class RabbitConfig {
     public Module dateTimeModule(){
         return new JavaTimeModule();
     }
+    /*
+    < Chat LocalDateTime example / 2024-04-09T02:10:29.415171 / 2024.04.09 02H:10M:29.415171S >
+    {
+        "createdTime": [
+            2024,
+            4,
+            9,
+            2,
+            10,
+            29,
+            415171000
+        ]
+    }
+     */
 }

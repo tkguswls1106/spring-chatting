@@ -58,7 +58,7 @@ public class ChatServiceImpl implements ChatService {
         }
 
         chatDto.setSenderName(user.getNickname());
-        chatDto.setCreatedDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm").withLocale(Locale.forLanguageTag("ko"))));
+        chatDto.setCreatedTime(LocalDateTime.now());  // 시간을 수동으로 직접 넣어줌. (실시간으로 chat 넘겨주는 시간과 DB에 저장되는 시간을 완전히 같게 하기위해서이다.)
 
         Chat chat = chatDto.toEntity(room);
         chatRepository.save(chat);
@@ -73,22 +73,11 @@ public class ChatServiceImpl implements ChatService {
         List<Chat> chatList = room.getChatList();
 
         return chatList.stream().map(ChatDto::new)
-                .sorted(Comparator.comparing(chatDto -> getLocalCreatedDate(chatDto.getCreatedDate())))  // 정렬기준: 날짜 오래된 순서 (오름차순)
+                .sorted(Comparator.comparing(ChatDto::getCreatedTime))  // 정렬기준: 날짜 오래된 순서 (오름차순)
                 .collect(Collectors.toList());
 //        return chatList.stream().map(ChatDto::new)
-//                .sorted(Comparator.comparing(getLocalCreatedDate(ChatDto::getCreatedDate)))  // 정렬기준: 날짜 오래된 순서 (오름차순)
-//                .collect(Collectors.toList());
-//        return chatList.stream().map(ChatDto::new)
-//                .sorted(Comparator.comparing(ChatDto::getCreatedDate)  // 정렬기준 우선순위1: 날짜 오래된 순서 (오름차순)
+//                .sorted(Comparator.comparing(ChatDto::getCreatedTime)  // 정렬기준 우선순위1: 날짜 오래된 순서 (오름차순)
 //                        .thenComparing(ChatDto::getId, Comparator.reverseOrder()))  // 우선순위1 동일시 우선순위2 부여: id 내림차순
 //                .collect(Collectors.toList());
-    }
-
-
-    // static으로 선언하면, 다른 클래스에서도 이 클래스의 new인스턴스생성 없이 바로 메소드 호출이 가능해진다.
-    public static LocalDateTime getLocalCreatedDate(String createdDate) {  // 날짜 정렬에 사용할 string형식의 날짜를 localDateTime형식으로 변환하는 메소드이다.
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm").withLocale(Locale.forLanguageTag("ko"));
-        LocalDateTime dateTimeModifiedDate = LocalDateTime.parse(createdDate, formatter);
-        return dateTimeModifiedDate;
     }
 }
