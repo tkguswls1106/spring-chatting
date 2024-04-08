@@ -3,12 +3,11 @@ package com.shj.springchatting.service.impl;
 import com.shj.springchatting.domain.chat.Chat;
 import com.shj.springchatting.domain.chat.MessageType;
 import com.shj.springchatting.domain.chat.Room;
-import com.shj.springchatting.domain.mapping.UserRoom;
 import com.shj.springchatting.domain.user.User;
 import com.shj.springchatting.dto.chat.ChatDto;
 import com.shj.springchatting.repository.ChatRepository;
+import com.shj.springchatting.repository.UserRoomRepository;
 import com.shj.springchatting.service.ChatService;
-import com.shj.springchatting.service.RoomService;
 import com.shj.springchatting.service.UserRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ import java.util.Locale;
 public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
-    private final RoomService roomService;
+    private final UserRoomRepository userRoomRepository;
     private final RoomServiceImpl roomServiceImpl;
     private final UserServiceImpl userServiceImpl;
     private final UserRoomService userRoomService;
@@ -33,37 +32,33 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ChatDto createChat(ChatDto chatDto) {
         User user = userServiceImpl.findUser(chatDto.getSenderId());
-        chatDto.setCreatedDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm").withLocale(Locale.forLanguageTag("ko"))));
+        Room room = roomServiceImpl.findRoom(chatDto.getRoomId());
+        boolean isExistsUserRoom = userRoomRepository.existsByUserAndRoom(user, room);
 
-        if(chatDto.getMessageType().equals(MessageType.ENTER)) {  // 방 입장의 경우
-            if(chatDto.getRoomId() == null) {  // 방의 첫번째 입장의 경우, 방 생성을 해주어야함.
-                if(chatDto.getRoomName() == null) throw new RuntimeException("ERROR - 방 생성시에는 반드시 roomName을 함께 보내주어야합니다.");
-                Room newRoom = roomService.createRoom(chatDto.getRoomName(), user);
-                chatDto.setRoomId(newRoom.getRoomId());
-                chatDto.setMessage("'" + user.getNickname() + "'님이 방을 생성하였습니다.");  // 방 신규 생성시에는 굳이 나타내줄 필요 없긴함. (차후 제거할 코드줄임.)
-
-                Chat chat = chatDto.toEntity(newRoom);
-                chatRepository.save(chat);
-                return chatDto;
+        if(chatDto.getMessageType().equals(MessageType.ENTER)) {  // 방 입장의 경우 (방이 이미 생성되어있다는 전제하에)
+            if(isExistsUserRoom == true) {  // 이미 방에 입장해있는 사용자의 경우에는, 메세지를 전송하지 않는다.
+                chatDto.setMessage("__null__");  // (==> 프론트엔드와의 null 약속메세지를 '__null__'로 해두었을경우의 예시)
             }
-            else {  // 방이 이미 생성되어 있는 경우
+            else {
                 chatDto.setMessage("'" + user.getNickname() + "'님이 방에 참가하였습니다.");
             }
         }
         else if(chatDto.getMessageType().equals(MessageType.LEAVE)) {  // 방 탈퇴의 경우
-            if(chatDto.getRoomId() == null) throw new RuntimeException("ERROR - 방 삭제시에는 반드시 roomId을 함께 보내주어야합니다.");
-            Room room = roomServiceImpl.findRoom(chatDto.getRoomId());
-            userRoomService.deleteUserRoom(user, room);
+            userRoomService.deleteUserRoom(user, room);  // 어차피 여기 안에서 이미 isExistsUserRoom 검사를 해줌.
             chatDto.setMessage("'" + user.getNickname() + "'님이 방에서 퇴장하셨습니다.");
         }
         else {  // 방 채팅의 경우 (MessageType.TALK 일때)
-            if(chatDto.getRoomId() == null) throw new RuntimeException("ERROR - 채팅시에는 반드시 roomId을 함께 보내주어야합니다.");
+            if(isExistsUserRoom == false) throw new RuntimeException("ERROR - 방에 참가하지않은 사용자는 채팅이 불가능합니다.");
             if(chatDto.getMessage() == null) throw new RuntimeException("ERROR - 채팅시에는 반드시 message을 함께 보내주어야합니다.");
             chatDto.setMessage("'" + user.getNickname() + "'님의 메세지: '" + chatDto.getMessage() + "'");  //  (차후 수정할 코드줄임.)
         }
 
-        Chat chat = chatDto.toEntity(roomServiceImpl.findRoom(chatDto.getRoomId()));
+        chatDto.setSenderName(user.getNickname());
+        chatDto.setCreatedDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm").withLocale(Locale.forLanguageTag("ko"))));
+
+        Chat chat = chatDto.toEntity(room);
         chatRepository.save(chat);
+
         return chatDto;
     }
 }

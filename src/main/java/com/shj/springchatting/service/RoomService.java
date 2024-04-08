@@ -1,8 +1,8 @@
 package com.shj.springchatting.service;
 
-import com.shj.springchatting.domain.chat.Room;
-import com.shj.springchatting.domain.user.User;
+import com.shj.springchatting.dto.chat.RoomSaveRequestDto;
+import com.shj.springchatting.dto.chat.RoomSaveResponseDto;
 
 public interface RoomService {
-    Room createRoom(String roomName, User user);
+    RoomSaveResponseDto createRoom(Long userId, RoomSaveRequestDto roomSaveRequestDto);
 }
