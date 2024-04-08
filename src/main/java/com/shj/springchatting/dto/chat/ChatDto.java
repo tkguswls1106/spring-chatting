@@ -22,18 +22,19 @@ public class ChatDto {
 
     // can NULL
     @Setter
-    private String senderName;
-    @Setter
     private String message;
+    @Setter
+    private String senderName;
     @Setter
     private String createdDate;
 
     public Chat toEntity(Room room) {
         return Chat.ChatSaveBuilder()
-                .messageType(messageType)
                 .room(room)
                 .senderId(senderId)
+                .senderName(senderName)
                 .message(message)
+                .messageType(messageType)
                 .createdDate(createdDate)
                 .build();
     }
