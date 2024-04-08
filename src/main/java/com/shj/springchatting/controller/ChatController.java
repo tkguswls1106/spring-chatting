@@ -30,9 +30,7 @@ public class ChatController {
     // @MessageMapping로 웹소켓 메시지를 처리.
     @MessageMapping("chat.message")  // 프론트엔드에서 '/pub/chat.message.{roomId}'로 호출시 이 브로커에서 처리.
     public void sendMessage(@Payload ChatDto chatDto) {
-        log.info("Message: {}", chatDto.getMessage());
         ChatDto responseChatDto = chatService.createChat(chatDto);
-
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + responseChatDto.getRoomId(), responseChatDto);  // '/exchange/chat.exchange/room.{roomId}' 이 클라이언트 주소로 상시 켜져(구독되어)있는 스톰프(웹소켓) 프론트엔드에 메세지 전달.
     }
 

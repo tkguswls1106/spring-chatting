@@ -30,7 +30,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Transactional
     @Override
-    public ChatDto createChat(ChatDto chatDto) {
+    public ChatDto createChat(ChatDto chatDto) {  // 다른 조건에 대한 여부는 차후 추가하면 됨. (ex: 방 최대인원에 대한 입장제한 or 재입장 관련 or 방에 남은 인원0명 또는 방장 퇴장의 경우 방삭제 ... 등등)
         User user = userServiceImpl.findUser(chatDto.getSenderId());
         Room room = roomServiceImpl.findRoom(chatDto.getRoomId());
         boolean isExistsUserRoom = userRoomRepository.existsByUserAndRoom(user, room);
@@ -40,6 +40,7 @@ public class ChatServiceImpl implements ChatService {
                 chatDto.setMessage("__null__");  // (==> 프론트엔드와의 null 약속메세지를 '__null__'로 해두었을경우의 예시)
             }
             else {
+                userRoomService.createUserRoom(user, room);
                 chatDto.setMessage("'" + user.getNickname() + "'님이 방에 참가하였습니다.");
             }
         }
