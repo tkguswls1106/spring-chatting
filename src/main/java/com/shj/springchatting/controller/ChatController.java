@@ -48,10 +48,10 @@ public class ChatController {
     }
 
 
-    // RabbicConfig에서 미리 chat.queue를 만들어두고 root.*을 라우팅키로 사용하여 exchange에 연결시켜 놓았기 때문에,
-    // exchange로 들어오는 모든 채팅방의 메시지를 receive()를 통해서 처리할수있다.
-    @RabbitListener(queues = CHAT_QUEUE_NAME)  // 기본적으로 chat.queue가 exchange에 바인딩 되어있기 때문에 모든 메시지 처리
-    public void receive(ChatDto chatDto){
-        System.out.println("receive message: " + chatDto.getMessage());
-    }
+//    // RabbicConfig에서 미리 chat.queue를 만들어두고 root.*을 라우팅키로 사용하여 exchange에 연결시켜 놓았기 때문에,
+//    // exchange로 들어오는 모든 채팅방의 메시지를 receive()를 통해서 처리할수있다.
+//    @RabbitListener(queues = CHAT_QUEUE_NAME)  // 기본적으로 chat.queue가 exchange에 바인딩 되어있기 때문에 모든 메시지 처리
+//    public void receive(ChatDto chatDto){
+//        System.out.println("receive message: " + chatDto.getMessage());
+//    }
 }
