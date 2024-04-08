@@ -35,7 +35,7 @@ public class RabbitConfig {
     private String rabbitHost;
     @Value("${spring.rabbitmq.rabbitmq-port}")
     private int rabbitPort;
-    private String rabbitVh = "/";
+    private String rabbitVirtualHost = "/";
 
 
     // Queue 등록
@@ -81,7 +81,7 @@ public class RabbitConfig {
     public ConnectionFactory connectionFactory(){
         CachingConnectionFactory factory = new CachingConnectionFactory();
         factory.setHost(rabbitHost);
-        factory.setVirtualHost(rabbitVh);
+        factory.setVirtualHost(rabbitVirtualHost);
         factory.setUsername(rabbitUser);
         factory.setPassword(rabbitPw);
         factory.setPort(rabbitPort);

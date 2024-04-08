@@ -18,7 +18,7 @@ public class RoomController {
     private final RoomService roomService;
 
 
-    @PostMapping("/{userId}/room")  // 나중에 로그인 유저로 변경하면, 패스파라미터 제외하기.
+    @PostMapping("/{userId}/rooms")  // 나중에 로그인 유저로 변경하면, {userId}패스파라미터 제외하기.
     public ResponseEntity createRoom(@PathVariable Long userId, @RequestBody RoomSaveRequestDto roomSaveRequestDto) {
         RoomSaveResponseDto roomSaveResponseDto = roomService.createRoom(userId, roomSaveRequestDto);
         return ResponseData.toResponseEntity(ResponseCode.TEST_SUCCESS, roomSaveResponseDto);

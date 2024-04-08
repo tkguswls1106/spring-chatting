@@ -29,5 +29,5 @@ public class MessageItem {
     public static final String GET_LOGIN = "204 - login api를 get method로 호출하였음";
 
 
-    public static final String TEST_SUCCESS = "SUCCESS - Test 성공";  // Test 용도
+    public static final String TEST_SUCCESS = "SUCCESS - Test 성공";  // Test 임시 용도
 }

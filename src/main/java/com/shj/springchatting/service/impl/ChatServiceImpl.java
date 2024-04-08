@@ -15,7 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,5 +64,31 @@ public class ChatServiceImpl implements ChatService {
         chatRepository.save(chat);
 
         return chatDto;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ChatDto> findChatsByRoom(Long roomId) {  // 차후 페이지네이션으로 리팩토링해서 수정할것.
+        Room room = roomServiceImpl.findRoom(roomId);
+        List<Chat> chatList = room.getChatList();
+
+        return chatList.stream().map(ChatDto::new)
+                .sorted(Comparator.comparing(chatDto -> getLocalCreatedDate(chatDto.getCreatedDate())))  // 정렬기준: 날짜 오래된 순서 (오름차순)
+                .collect(Collectors.toList());
+//        return chatList.stream().map(ChatDto::new)
+//                .sorted(Comparator.comparing(getLocalCreatedDate(ChatDto::getCreatedDate)))  // 정렬기준: 날짜 오래된 순서 (오름차순)
+//                .collect(Collectors.toList());
+//        return chatList.stream().map(ChatDto::new)
+//                .sorted(Comparator.comparing(ChatDto::getCreatedDate)  // 정렬기준 우선순위1: 날짜 오래된 순서 (오름차순)
+//                        .thenComparing(ChatDto::getId, Comparator.reverseOrder()))  // 우선순위1 동일시 우선순위2 부여: id 내림차순
+//                .collect(Collectors.toList());
+    }
+
+
+    // static으로 선언하면, 다른 클래스에서도 이 클래스의 new인스턴스생성 없이 바로 메소드 호출이 가능해진다.
+    public static LocalDateTime getLocalCreatedDate(String createdDate) {  // 날짜 정렬에 사용할 string형식의 날짜를 localDateTime형식으로 변환하는 메소드이다.
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy. M. d. a h:mm").withLocale(Locale.forLanguageTag("ko"));
+        LocalDateTime dateTimeModifiedDate = LocalDateTime.parse(createdDate, formatter);
+        return dateTimeModifiedDate;
     }
 }

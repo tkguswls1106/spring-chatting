@@ -28,6 +28,7 @@ public class ChatDto {
     @Setter
     private String createdDate;
 
+
     public Chat toEntity(Room room) {
         return Chat.ChatSaveBuilder()
                 .room(room)
@@ -37,6 +38,15 @@ public class ChatDto {
                 .messageType(messageType)
                 .createdDate(createdDate)
                 .build();
+    }
+
+    public ChatDto(Chat entity) {
+        this.senderId = entity.getSenderId();
+        this.roomId = entity.getRoom().getRoomId();
+        this.messageType = entity.getMessageType();
+        this.message = entity.getMessage();
+        this.senderName = entity.getSenderName();
+        this.createdDate = entity.getCreatedDate();
     }
 }
 

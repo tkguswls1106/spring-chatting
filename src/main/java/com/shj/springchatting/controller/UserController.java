@@ -20,7 +20,7 @@ public class UserController {
 
 
     // Test 용도
-    @PostMapping("/user/{nickname}")
+    @PostMapping("/users/{nickname}")
     public ResponseEntity createUser(@PathVariable String nickname) {
         User user = User.UserSaveBuilder()
                 .nickname(nickname)

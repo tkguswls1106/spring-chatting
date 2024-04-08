@@ -1,15 +1,21 @@
 package com.shj.springchatting.controller;
 
 import com.shj.springchatting.dto.chat.ChatDto;
+import com.shj.springchatting.dto.chat.RoomSaveRequestDto;
+import com.shj.springchatting.dto.chat.RoomSaveResponseDto;
+import com.shj.springchatting.response.ResponseCode;
+import com.shj.springchatting.response.ResponseData;
 import com.shj.springchatting.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -20,11 +26,12 @@ public class ChatController {
     private final RabbitTemplate rabbitTemplate;
     private final ChatService chatService;
 
-    private final static String CHAT_QUEUE_NAME = "chat.queue";
+    private final static String CHAT_QUEUE_NAME = "chat.queue";  // RabbitConfig에서 exchange와 바인딩되어 한세트로 묶여있음.
     private final static String CHAT_EXCHANGE_NAME = "chat.exchange";
 
     // 프론트엔드 주소: /exchange/chat.exchange/room.{roomId}
     // 백엔드 주소: /pub/chat.message
+    // 참고로 RabbitMQ에서는 네이밍을 /sub/chat.exchange/room.{roomId} 로는 불가능함.
 
 
     // @MessageMapping로 웹소켓 메시지를 처리.
@@ -32,6 +39,12 @@ public class ChatController {
     public void sendMessage(@Payload ChatDto chatDto) {
         ChatDto responseChatDto = chatService.createChat(chatDto);
         rabbitTemplate.convertAndSend(CHAT_EXCHANGE_NAME, "room." + responseChatDto.getRoomId(), responseChatDto);  // '/exchange/chat.exchange/room.{roomId}' 이 클라이언트 주소로 상시 켜져(구독되어)있는 스톰프(웹소켓) 프론트엔드에 메세지 전달.
+    }
+
+    @GetMapping("/rooms/{roomId}/chats")
+    public ResponseEntity findChatsByRoom(@PathVariable Long roomId) {  // 차후 페이지네이션으로 리팩토링해서 수정할것.
+        List<ChatDto> chatDtoList = chatService.findChatsByRoom(roomId);
+        return ResponseData.toResponseEntity(ResponseCode.TEST_SUCCESS, chatDtoList);
     }
 
 

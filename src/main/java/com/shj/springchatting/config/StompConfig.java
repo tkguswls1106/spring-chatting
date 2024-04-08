@@ -19,7 +19,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     private String rabbitHost;
     @Value("${spring.rabbitmq.stomp-port}")
     private int stompPort;
-    private String rabbitVh = "/";
+    private String rabbitVirtualHost = "/";
 
 
     @Override
@@ -32,7 +32,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
                 .setSystemPasscode(rabbitPw)
                 .setRelayHost(rabbitHost)
                 .setRelayPort(stompPort)
-                .setVirtualHost(rabbitVh);
+                .setVirtualHost(rabbitVirtualHost);
 
         // 메시지 발행 url (즉, 프론트엔드가 백엔드로 요청할 주소임. 백엔드에서 @MessageMapping로 요청받음. = 백엔드 주소)
         registry.setPathMatcher(new AntPathMatcher("."));  // 예시로, url을 'chat/Room/3 -> chat.Room.3'으로 참조하기 위한 설정임.

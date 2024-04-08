@@ -30,7 +30,7 @@ public enum ResponseCode {
     TOKEN_EXPIRED(StatusItem.UNAUTHORIZED, MessageItem.TOKEN_EXPIRED),
     TOKEN_ERROR(StatusItem.UNAUTHORIZED, MessageItem.TOKEN_ERROR),
 
-    // Test 용도
+    // Test 임시 용도
     TEST_SUCCESS(StatusItem.OK, MessageItem.TEST_SUCCESS),
 
     // ===================== //
