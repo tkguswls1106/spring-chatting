@@ -30,10 +30,9 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	// WebSocket & Stomp
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-//	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-reactor-netty', version: '2.4.6'
-//	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	// rabbitMQ
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty:3.0.0'
