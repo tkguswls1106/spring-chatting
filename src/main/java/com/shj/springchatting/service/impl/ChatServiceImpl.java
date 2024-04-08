@@ -14,10 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,7 +58,7 @@ public class ChatServiceImpl implements ChatService {
         chatDto.setSenderName(user.getNickname());
         chatDto.setCreatedTime(LocalDateTime.now());  // 시간을 수동으로 직접 넣어줌. (실시간으로 chat 넘겨주는 시간과 DB에 저장되는 시간을 완전히 같게 하기위해서이다.)
 
-        Chat chat = chatDto.toEntity(room);
+        Chat chat = chatDto.toEntity();
         chatRepository.save(chat);
 
         return chatDto;
@@ -69,8 +67,7 @@ public class ChatServiceImpl implements ChatService {
     @Transactional(readOnly = true)
     @Override
     public List<ChatDto> findChatsByRoom(Long roomId) {  // 차후 페이지네이션으로 리팩토링해서 수정할것.
-        Room room = roomServiceImpl.findRoom(roomId);
-        List<Chat> chatList = room.getChatList();
+        List<Chat> chatList = chatRepository.findAllByRoomId(roomId);
 
         return chatList.stream().map(ChatDto::new)
                 .sorted(Comparator.comparing(ChatDto::getCreatedTime))  // 정렬기준: 날짜 오래된 순서 (오름차순)

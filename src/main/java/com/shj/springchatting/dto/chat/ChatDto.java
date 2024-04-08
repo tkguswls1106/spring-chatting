@@ -2,7 +2,6 @@ package com.shj.springchatting.dto.chat;
 
 import com.shj.springchatting.domain.chat.Chat;
 import com.shj.springchatting.domain.chat.MessageType;
-import com.shj.springchatting.domain.chat.Room;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,9 +30,9 @@ public class ChatDto {
     private LocalDateTime createdTime;
 
 
-    public Chat toEntity(Room room) {
+    public Chat toEntity() {
         return Chat.ChatSaveBuilder()
-                .room(room)
+                .roomId(roomId)
                 .senderId(senderId)
                 .senderName(senderName)
                 .message(message)
@@ -44,7 +43,7 @@ public class ChatDto {
 
     public ChatDto(Chat entity) {
         this.senderId = entity.getSenderId();
-        this.roomId = entity.getRoom().getRoomId();
+        this.roomId = entity.getRoomId();
         this.messageType = entity.getMessageType();
         this.message = entity.getMessage();
         this.senderName = entity.getSenderName();

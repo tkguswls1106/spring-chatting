@@ -41,3 +41,6 @@ out/
 
 ## 내가 mysql 패스워드 유출을 우려하여 따로 파일로 빼두고 gitignore에 추가해둠.
 **/application-mysql.properties
+
+## 내가 mongoDB 패스워드 유출을 우려하여 따로 파일로 빼두고 gitignore에 추가해둠.
+**/application-mongodb.properties

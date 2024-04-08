@@ -27,11 +27,6 @@ public class Room implements Serializable {  // 웹소켓 위에 Stomp를 얹어
     private List<UserRoom> userRoomList = new ArrayList<>();
 
 
-    // (읽기 전용 필드) mappedBy만 사용으로, 조회 용도로만 가능. JPA는 insert나 update할 때 읽기 전용 필드를 아예 보지 않아서, 값을 넣어도 아무일도 일어나지않음.
-    @OneToMany(mappedBy = "room")  // Room-Chat 양방향매핑
-    private List<Chat> chatList = new ArrayList<>();
-
-
     @Builder(builderClassName = "RoomSaveBuilder", builderMethodName = "RoomSaveBuilder")
     public Room(String roomName) {
         // 이 빌더는 채팅방 생성때만 사용할 용도

@@ -1,7 +1,11 @@
 package com.shj.springchatting.repository;
 
 import com.shj.springchatting.domain.chat.Chat;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface ChatRepository extends JpaRepository<Chat, Long> {
+import java.util.List;
+
+public interface ChatRepository extends MongoRepository<Chat, String> {  // MongoDB
+    List<Chat> findAllByRoomId(Long roomId);
+//    Page<Chat> findByRoomId(Long roomId, Pageable pageable);
 }
