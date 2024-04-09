@@ -4,5 +4,5 @@ import com.shj.springchatting.dto.chat.RoomSaveRequestDto;
 import com.shj.springchatting.dto.chat.RoomSaveResponseDto;
 
 public interface RoomService {
-    RoomSaveResponseDto createRoom(Long userId, RoomSaveRequestDto roomSaveRequestDto);
+    RoomSaveResponseDto createRoom(RoomSaveRequestDto roomSaveRequestDto);
 }

@@ -7,6 +7,7 @@ import com.shj.springchatting.dto.chat.RoomSaveResponseDto;
 import com.shj.springchatting.repository.RoomRepository;
 import com.shj.springchatting.service.RoomService;
 import com.shj.springchatting.service.UserRoomService;
+import com.shj.springchatting.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,13 +30,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Transactional
     @Override
-    public RoomSaveResponseDto createRoom(Long userId, RoomSaveRequestDto roomSaveRequestDto) {
+    public RoomSaveResponseDto createRoom(RoomSaveRequestDto roomSaveRequestDto) {
         Room room = Room.RoomSaveBuilder()
                 .roomName(roomSaveRequestDto.getRoomName())
                 .build();
         roomRepository.save(room);
 
-        User user = userServiceImpl.findUser(userId);
+        User user = userServiceImpl.findUser(SecurityUtil.getCurrentMemberId());
         userRoomService.createUserRoom(user, room);
 
         return new RoomSaveResponseDto(room);

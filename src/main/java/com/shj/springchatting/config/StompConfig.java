@@ -1,6 +1,7 @@
 package com.shj.springchatting.config;
 
 import com.shj.springchatting.jwt.JwtChannelInterceptor;
+import com.shj.springchatting.jwt.TokenProvider;
 import com.shj.springchatting.jwt.handler.JwtStompExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,12 +11,12 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.*;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSocketMessageBroker
-@RequiredArgsConstructor
 public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final JwtChannelInterceptor jwtChannelInterceptor;
+    private final TokenProvider tokenProvider;
 
     // 주의할점은, 여기의 @Value는 'springframework.beans.factory.annotation.Value'소속이다! lombok의 @Value와 착각하지 말자!
     @Value("${spring.rabbitmq.username}")
@@ -59,6 +60,6 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     // 프론트엔드->백엔드로 실시간 Stomp 요청을 주었을때 채널 인터셉터
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(jwtChannelInterceptor);
+        registration.interceptors(new JwtChannelInterceptor(tokenProvider));
     }
 }
