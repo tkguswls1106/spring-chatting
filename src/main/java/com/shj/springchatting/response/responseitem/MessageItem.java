@@ -19,6 +19,9 @@ public class MessageItem {
     public static final String NOT_FOUND_USER = "ERROR - 회원을 찾을 수 없습니다.";
     public static final String DUPLICATE_USER = "ERROR - 회원가입 로그인아이디 중복 에러";
 
+    public static final String CREATED_ROOM = "SUCCESS - 채팅방 생성 성공";
+    public static final String READ_CHATLIST = "SUCCESS - 채팅방의 채팅내역 목록 조회 성공";
+
     public static final String READ_IS_LOGIN = "SUCCESS - 현재 로그인 여부 조회 성공";
     public static final String anonymousUser_ERROR = "ERROR - anonymousUser 에러";
 

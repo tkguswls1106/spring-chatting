@@ -24,6 +24,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity  // Spring Security 설정을 활성화시키는 어노테이션
@@ -94,6 +96,9 @@ public class SecurityConfig {  // 스프링 시큐리티 구성요소 설정 클
         // - 전체적인 순서: request 요청 -> JwtExceptionFilter -> JwtFilter -> JwtAuthenticationEntryPoint(401) or JwtExceptionFilter
         // - permitAll()없이 토큰없이 로그인필수기능 이용하려고 할시 순서: request 요청 -> JwtExceptionFilter -> JwtFilter -> JwtAuthenticationEntryPoint 에서 401
         // - 토큰 만료시 순서: request 요청 -> JwtExceptionFilter -> JwtFilter -> JwtExceptionFilter
+        
+        // - Stomp 전체적인 순서: request 요청 -> JwtChannelInterceptor
+        // - Stomp 토큰 에러시 순서: request 요청 -> JwtChannelInterceptor -> JwtStompExceptionHandler
 
         return http.build();
     }
@@ -102,11 +107,17 @@ public class SecurityConfig {  // 스프링 시큐리티 구성요소 설정 클
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOrigin("*");  // 임시 테스팅 용도
-//        config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        config.setAllowedOriginPatterns(Arrays.asList("*"));  // 임시 테스팅 용도
+//        config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowedMethods(Arrays.asList("*"));
         config.setAllowCredentials(true);
+
+////        config.addAllowedOrigin("*");  // 임시 테스팅 용도
+//        config.addAllowedOrigin("http://localhost:3000");
+//        config.addAllowedHeader("*");
+//        config.addAllowedMethod("*");
+//        config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

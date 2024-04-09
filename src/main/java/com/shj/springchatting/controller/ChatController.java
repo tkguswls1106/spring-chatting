@@ -1,13 +1,10 @@
 package com.shj.springchatting.controller;
 
 import com.shj.springchatting.dto.chat.ChatDto;
-import com.shj.springchatting.dto.chat.RoomSaveRequestDto;
-import com.shj.springchatting.dto.chat.RoomSaveResponseDto;
 import com.shj.springchatting.response.ResponseCode;
 import com.shj.springchatting.response.ResponseData;
 import com.shj.springchatting.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+// @CrossOrigin(origins = "*", allowedHeaders = "*")  // SecurityConfig에 대신 만들어주었음.
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
@@ -44,7 +40,7 @@ public class ChatController {
     @GetMapping("/rooms/{roomId}/chats")
     public ResponseEntity findChatsByRoom(@PathVariable Long roomId) {  // 차후 페이지네이션으로 리팩토링해서 수정할것.
         List<ChatDto> chatDtoList = chatService.findChatsByRoom(roomId);
-        return ResponseData.toResponseEntity(ResponseCode.TEST_SUCCESS, chatDtoList);
+        return ResponseData.toResponseEntity(ResponseCode.READ_CHATLIST, chatDtoList);
     }
 
 

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+// @CrossOrigin(origins = "*", allowedHeaders = "*")  // SecurityConfig에 대신 만들어주었음.
 @RestController
 @RequiredArgsConstructor
 public class RoomController {
@@ -20,6 +20,6 @@ public class RoomController {
     @PostMapping("/{userId}/rooms")  // 나중에 로그인 유저로 변경하면, {userId}패스파라미터 제외하기.
     public ResponseEntity createRoom(@PathVariable Long userId, @RequestBody RoomSaveRequestDto roomSaveRequestDto) {
         RoomSaveResponseDto roomSaveResponseDto = roomService.createRoom(userId, roomSaveRequestDto);
-        return ResponseData.toResponseEntity(ResponseCode.TEST_SUCCESS, roomSaveResponseDto);
+        return ResponseData.toResponseEntity(ResponseCode.CREATED_ROOM, roomSaveResponseDto);
     }
 }
