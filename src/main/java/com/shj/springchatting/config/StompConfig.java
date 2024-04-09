@@ -1,14 +1,22 @@
 package com.shj.springchatting.config;
 
+import com.shj.springchatting.jwt.JwtChannelInterceptor;
+import com.shj.springchatting.jwt.TokenProvider;
+import com.shj.springchatting.jwt.handler.JwtStompExceptionHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.*;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSocketMessageBroker
 public class StompConfig implements WebSocketMessageBrokerConfigurer {
+
+    private final TokenProvider tokenProvider;
 
     // 주의할점은, 여기의 @Value는 'springframework.beans.factory.annotation.Value'소속이다! lombok의 @Value와 착각하지 말자!
     @Value("${spring.rabbitmq.username}")
@@ -45,5 +53,13 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")  // 핸들러를 등록할때 소켓에 접속하기위한 경로 ("/ws")를 함께 설정.
                 .setAllowedOriginPatterns("*");  // 다른곳에서 접속이 가능하도록 setAllowedOrigins("*")을 붙여 cors문제를 해결.
         // .withSockJS();
+
+        registry.setErrorHandler(new JwtStompExceptionHandler());  // 소켓 통신 중, 예외가 발생했을 때 JwtStompExceptionHandler로 제어권이 넘어간다.
+    }
+
+    // 프론트엔드->백엔드로 실시간 Stomp 요청을 주었을때 채널 인터셉터
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(new JwtChannelInterceptor(tokenProvider));
     }
 }

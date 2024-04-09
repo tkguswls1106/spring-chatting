@@ -21,6 +21,9 @@ public enum ResponseCode {
     HEALTHY_SUCCESS(StatusItem.OK, MessageItem.HEALTHY_SUCCESS),
     REISSUE_SUCCESS(StatusItem.OK, MessageItem.REISSUE_SUCCESS),
 
+    CREATED_ROOM(StatusItem.CREATED, MessageItem.CREATED_ROOM),
+    READ_CHATLIST(StatusItem.OK, MessageItem.READ_CHATLIST),
+
     // 기타 실패 응답
     INTERNAL_SERVER_ERROR(StatusItem.INTERNAL_SERVER_ERROR, MessageItem.INTERNAL_SERVER_ERROR),
     anonymousUser_ERROR(StatusItem.INTERNAL_SERVER_ERROR, MessageItem.anonymousUser_ERROR),

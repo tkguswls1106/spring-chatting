@@ -1,6 +1,5 @@
 package com.shj.springchatting.controller;
 
-import com.shj.springchatting.domain.user.User;
 import com.shj.springchatting.dto.chat.RoomSaveRequestDto;
 import com.shj.springchatting.dto.chat.RoomSaveResponseDto;
 import com.shj.springchatting.response.ResponseCode;
@@ -10,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+// @CrossOrigin(origins = "*", allowedHeaders = "*")  // SecurityConfig에 대신 만들어주었음.
 @RestController
 @RequiredArgsConstructor
 public class RoomController {
@@ -18,9 +17,9 @@ public class RoomController {
     private final RoomService roomService;
 
 
-    @PostMapping("/{userId}/rooms")  // 나중에 로그인 유저로 변경하면, {userId}패스파라미터 제외하기.
-    public ResponseEntity createRoom(@PathVariable Long userId, @RequestBody RoomSaveRequestDto roomSaveRequestDto) {
-        RoomSaveResponseDto roomSaveResponseDto = roomService.createRoom(userId, roomSaveRequestDto);
-        return ResponseData.toResponseEntity(ResponseCode.TEST_SUCCESS, roomSaveResponseDto);
+    @PostMapping("/rooms")
+    public ResponseEntity createRoom(@RequestBody RoomSaveRequestDto roomSaveRequestDto) {
+        RoomSaveResponseDto roomSaveResponseDto = roomService.createRoom(roomSaveRequestDto);
+        return ResponseData.toResponseEntity(ResponseCode.CREATED_ROOM, roomSaveResponseDto);
     }
 }
