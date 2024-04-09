@@ -1,6 +1,5 @@
 package com.shj.springchatting.controller;
 
-import com.shj.springchatting.domain.user.User;
 import com.shj.springchatting.dto.chat.RoomSaveRequestDto;
 import com.shj.springchatting.dto.chat.RoomSaveResponseDto;
 import com.shj.springchatting.response.ResponseCode;

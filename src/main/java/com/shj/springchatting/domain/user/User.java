@@ -1,38 +1,77 @@
 package com.shj.springchatting.domain.user;
 
-import com.shj.springchatting.domain.chat.Room;
-import com.shj.springchatting.domain.mapping.UserRoom;
+import com.shj.springchatting.domain.common.BaseEntity;
+import com.shj.springchatting.dto.user.UserSignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
 
 @Table(name = "user")
 @Entity
-public class User implements Serializable {
+public class User extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
+    @Column(name = "email", unique = true)
+    private String email;
+
+    private String socialId;
     private String nickname;
+    private String imageUrl;
 
-    // (읽기 전용 필드) mappedBy만 사용으로, 조회 용도로만 가능. JPA는 insert나 update할 때 읽기 전용 필드를 아예 보지 않아서, 값을 넣어도 아무일도 일어나지않음.
-    @OneToMany(mappedBy = "user")  // User-UserRoom 양방향매핑
-    private List<UserRoom> userRoomList = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;  // KAKAO, NAVER, GOOGLE
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
+    @Column(name = "more_info1")
+    private String moreInfo1;
+    @Column(name = "more_info2")
+    private String moreInfo2;
+    @Column(name = "more_info3")
+    private String moreInfo3;
 
 
-    @Builder(builderClassName = "UserSaveBuilder", builderMethodName = "UserSaveBuilder")
-    public User(String nickname) {
-        // 이 빌더는 User 생성때만 사용할 용도
+    @Builder(builderClassName = "UserJoinBuilder", builderMethodName = "UserJoinBuilder")
+    public User(String email, Role role, SocialType socialType, String socialId, String nickname, String imageUrl) {
+        // 이 빌더는 사용자 회원가입때만 사용할 용도
+        this.email = email;
+        this.role = role;
+
+        this.socialType = socialType;
+
+        this.socialId = socialId;
         this.nickname = nickname;
+        this.imageUrl = imageUrl;
+
+        // refreshToken과 moreInfo들은 null로 들어간다.
+    }
+
+
+    public void updateRole() {  // 추가정보 입력후, Role을 GUEST->USER로 업데이트. (헤더의 jwt 토큰에 등록해둔 권한도 수정해야하기에, Access 토큰도 따로 재발급해야함.)
+        this.role = Role.ROLE_USER;
+    }
+
+    public void updateMoreInfo(UserSignupRequestDto userSignupRequestdto) {
+        this.moreInfo1 = userSignupRequestdto.getMoreInfo1();
+        this.moreInfo2 = userSignupRequestdto.getMoreInfo2();
+        this.moreInfo3 = userSignupRequestdto.getMoreInfo3();
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
