@@ -9,6 +9,9 @@ import lombok.Getter;
 @Getter
 public enum ResponseCode {
 
+    // Swagger API 응답값 미리보기 용도
+    string(StatusItem.OK, "Swagger API"),
+
     CREATED_USER(StatusItem.CREATED, MessageItem.CREATED_USER),
     NOT_FOUND_USER(StatusItem.NOT_FOUND, MessageItem.NOT_FOUND_USER),
     DUPLICATE_USER(StatusItem.BAD_REQUEST, MessageItem.DUPLICATE_USER),
